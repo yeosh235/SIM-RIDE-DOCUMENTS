@@ -15,6 +15,12 @@
         .card-header {
             font-weight: bold;
         }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -47,9 +53,13 @@
             <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
                 <h2>Documents</h2>
                 <ul>
-                    <li><a href="documents/FYP-24-S3-31P_Project Plan_SIM Ride.xls" download>Project Plan</a></li>
+                    <li>
+                        <a href="#" onclick="viewDocument('documents/FYP-24-S3-31P_Project Plan_SIM Ride.xls')">Project Plan</a> | 
+                        <a href="documents/FYP-24-S3-31P_Project Plan_SIM Ride.xls" download>Download</a>
+                    </li>
                     <!-- Add more documents as needed -->
                 </ul>
+                <iframe id="docViewer" src=""></iframe>
             </div>
             <div class="tab-pane fade" id="members" role="tabpanel" aria-labelledby="members-tab">
                 <h2>Members</h2>
@@ -106,5 +116,10 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function viewDocument(file) {
+            document.getElementById('docViewer').src = file;
+        }
+    </script>
 </body>
 </html>
