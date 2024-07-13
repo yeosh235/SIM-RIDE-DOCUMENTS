@@ -9,14 +9,6 @@
         body {
             padding-top: 60px;
         }
-        .container .row {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .container .row > div {
-            flex: 1;
-            min-width: 300px;
-        }
     </style>
 </head>
 <body>
@@ -40,17 +32,25 @@
         </div>
     </nav>
     <div class="container">
-        <div class="row">
-            <div>
-                <h2 id="projectDiary">Project Diary</h2>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#projectDiaryTab">Project Diary</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#documentsTab">Documents</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="projectDiaryTab" class="tab-pane active">
+                <h2>Project Diary</h2>
                 <ul>
                     <li>Week 1: <a href="diary/week1.pdf" target="_blank">Project Diary Entry</a> - Uploaded on 08/07/2024</li>
                     <li>Week 2: <a href="diary/week2.pdf" target="_blank">Project Diary Entry</a> - Uploaded on 15/07/2024</li>
                     <!-- Add more diary entries as needed -->
                 </ul>
             </div>
-            <div>
-                <h2 id="documents">Documents</h2>
+            <div id="documentsTab" class="tab-pane fade">
+                <h2>Documents</h2>
                 <ul>
                     <li>
                         <a href="documents/FYP-24-S3-31P_Project Plan_SIM Ride.xls" target="_blank">FYP-24-S3-31P_Project Plan_SIM Ride.xls</a> - Uploaded on 13/07/2024
