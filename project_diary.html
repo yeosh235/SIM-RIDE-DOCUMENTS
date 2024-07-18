@@ -36,14 +36,34 @@
     </nav>
     <div class="container">
         <h2>Project Diary</h2>
-        <ul>
-            <li><a href="diary/Week_1_Diary_Entry.pdf">Week 1: Project Diary Entry</a></li>
-            <li><a href="diary/Week_2_Diary_Entry.pdf">Week 2: Project Diary Entry</a></li>
+        <ul id="diary-list">
+            <!-- Diary entries will be listed here -->
         </ul>
         <a class="btn btn-secondary back-button" href="index.html">Back</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="module">
+        import { storage } from './firebase-config.js';
+        import { ref, listAll, getDownloadURL } from "firebase/storage";
+
+        const diaryList = document.getElementById('diary-list');
+        const listRef = ref(storage, 'diary/');
+
+        listAll(listRef)
+            .then((res) => {
+                res.items.forEach((itemRef) => {
+                    getDownloadURL(itemRef).then((url) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="${url}" target="_blank">${itemRef.name}</a>`;
+                        diaryList.appendChild(li);
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching diary entries: ", error);
+            });
+    </script>
 </body>
 </html>

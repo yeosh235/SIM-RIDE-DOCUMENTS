@@ -9,7 +9,9 @@
         body {
             padding-top: 60px;
         }
-        .back-button {
+        .button-container {
+            display: flex;
+            gap: 10px;
             margin-top: 20px;
         }
     </style>
@@ -36,13 +38,83 @@
     </nav>
     <div class="container">
         <h2>Documents</h2>
-        <ul>
-            <li><a href="documents/FYP-24-S3-31P_Project_Plan_SIM_Ride.xls">FYP-24-S3-31P_Project Plan_SIM Ride.xls</a></li>
+        <form id="uploadForm">
+            <input type="file" id="fileInput" class="form-control-file">
+            <div class="button-container">
+                <button type="button" id="uploadButton" class="btn btn-primary">Upload</button>
+                <a class="btn btn-secondary" href="index.html">Back</a>
+            </div>
+        </form>
+        <ul id="documents-list" class="mt-4">
+            <!-- Documents will be listed here -->
         </ul>
-        <a class="btn btn-secondary back-button" href="index.html">Back</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="module">
+        import { storage } from './firebase-config.js';
+        import { ref, uploadBytes, listAll, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-storage.js";
+
+        const uploadButton = document.getElementById('uploadButton');
+        const fileInput = document.getElementById('fileInput');
+        const documentsList = document.getElementById('documents-list');
+
+        uploadButton.addEventListener('click', () => {
+            const file = fileInput.files[0];
+            if (!file) return alert('No file chosen');
+
+            const storageRef = ref(storage, 'documents/' + file.name);
+            uploadBytes(storageRef, file).then((snapshot) => {
+                alert('Uploaded a file!');
+                loadDocuments();
+            }).catch((error) => {
+                console.error("Error uploading file: ", error);
+            });
+        });
+
+        function loadDocuments() {
+            const listRef = ref(storage, 'documents/');
+            listAll(listRef)
+                .then((res) => {
+                    documentsList.innerHTML = '';
+                    res.items.forEach((itemRef) => {
+                        getDownloadURL(itemRef).then((url) => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <a href="${url}" target="_blank">${itemRef.name}</a>
+                                <button class="btn btn-success btn-sm ml-2" onclick="downloadFile('${url}')">Download</button>
+                                <button class="btn btn-danger btn-sm ml-2" onclick="deleteFile('${itemRef.fullPath}')">Delete</button>
+                            `;
+                            documentsList.appendChild(li);
+                        });
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error fetching documents: ", error);
+                });
+        }
+
+        window.downloadFile = function(url) {
+            window.open(url, '_blank');
+        }
+
+        window.deleteFile = function(filePath) {
+            const password = prompt('Enter password to delete the file:');
+            if (password !== 'simride') {
+                return alert('Incorrect password');
+            }
+
+            const fileRef = ref(storage, filePath);
+            deleteObject(fileRef).then(() => {
+                alert('File deleted successfully');
+                loadDocuments();
+            }).catch((error) => {
+                console.error("Error deleting file: ", error);
+            });
+        };
+
+        loadDocuments();
+    </script>
 </body>
 </html>
