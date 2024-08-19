@@ -55,15 +55,20 @@
     <script type="module">
         import { storage } from './firebase-config.js';
         import { ref, uploadBytes, listAll, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-storage.js";
-
+    
         const uploadButton = document.getElementById('uploadButton');
         const fileInput = document.getElementById('fileInput');
         const documentsList = document.getElementById('documents-list');
-
+    
         uploadButton.addEventListener('click', () => {
+            const password = prompt('Enter password to upload the file:');
+            if (password !== 'simride') {
+                return alert('Incorrect password');
+            }
+    
             const file = fileInput.files[0];
             if (!file) return alert('No file chosen');
-
+    
             const storageRef = ref(storage, 'documents/' + file.name);
             uploadBytes(storageRef, file).then((snapshot) => {
                 alert('Uploaded a file!');
@@ -72,7 +77,7 @@
                 console.error("Error uploading file: ", error);
             });
         });
-
+    
         function loadDocuments() {
             const listRef = ref(storage, 'documents/');
             listAll(listRef)
@@ -94,17 +99,17 @@
                     console.error("Error fetching documents: ", error);
                 });
         }
-
+    
         window.downloadFile = function(url) {
             window.open(url, '_blank');
         }
-
+    
         window.deleteFile = function(filePath) {
             const password = prompt('Enter password to delete the file:');
             if (password !== 'simride') {
                 return alert('Incorrect password');
             }
-
+    
             const fileRef = ref(storage, filePath);
             deleteObject(fileRef).then(() => {
                 alert('File deleted successfully');
@@ -113,8 +118,9 @@
                 console.error("Error deleting file: ", error);
             });
         };
-
+    
         loadDocuments();
     </script>
+    
 </body>
 </html>
